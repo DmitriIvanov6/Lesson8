@@ -14,8 +14,9 @@ import java.util.ResourceBundle;
 
 public class Controller {
 
+
     @FXML
-    TextField msgField, usernameField;
+    TextField msgField, usernameField, passwordField;
 
     @FXML
     TextArea msgArea;
@@ -43,19 +44,25 @@ public class Controller {
     }
 
     public void login(ActionEvent actionEvent) {
-        if(socket == null || socket.isClosed()) {
+        if (socket == null || socket.isClosed()) {
             connect();
         }
 
-        if(usernameField.getText().isEmpty()) {
+        if (usernameField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Имя пользователя не может быть пустым",
+                    ButtonType.OK);
+            alert.showAndWait();
+            return;
+        }
+        if (passwordField.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Поле с паролем не может быть пустым",
                     ButtonType.OK);
             alert.showAndWait();
             return;
         }
 
         try {
-            out.writeUTF("/login " + usernameField.getText());
+            out.writeUTF("/login " + usernameField.getText() + " " + passwordField.getText());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -63,7 +70,7 @@ public class Controller {
 
     public void setUsername(String username) {
         this.username = username;
-        if(username != null) {
+        if (username != null) {
             loginPanel.setVisible(false);
             loginPanel.setManaged(false);
             msgPanel.setVisible(true);
@@ -87,13 +94,13 @@ public class Controller {
                     while (true) {
                         String msg = in.readUTF();
 
-                        //login_ok Alex
-                        if(msg.startsWith("/login_ok ")) {
+                        //login_ok
+                        if (msg.startsWith("/login_ok ")) {
                             setUsername(msg.split("\\s")[1]);
                             break;
                         }
 
-                        if(msg.startsWith("/login_failed ")) {
+                        if (msg.startsWith("/login_failed ")) {
                             String cause = msg.split("\\s", 2)[1];
                             msgArea.appendText(cause + '\n');
                         }
@@ -103,7 +110,7 @@ public class Controller {
                     //цикл общения
                     while (true) {
                         String msg = in.readUTF();
-                        if(msg.startsWith("/")) {
+                        if (msg.startsWith("/")) {
                             executeCommand(msg);
                             continue;
                         }
@@ -123,7 +130,7 @@ public class Controller {
     }
 
     private void executeCommand(String cmd) {
-        if(cmd.startsWith("/clients_list ")) {
+        if (cmd.startsWith("/clients_list ")) {
             String[] tokens = cmd.split("\\s");
 
             Platform.runLater(() -> {
@@ -137,7 +144,7 @@ public class Controller {
 
     public void disconnect() {
         setUsername(null);
-        if(socket != null) {
+        if (socket != null) {
             try {
                 socket.close();
             } catch (IOException e) {

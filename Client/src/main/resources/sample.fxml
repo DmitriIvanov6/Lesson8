@@ -3,7 +3,9 @@
 <VBox fx:controller="Controller"
       xmlns:fx="http://javafx.com/fxml" alignment="center">
     <HBox fx:id="loginPanel">
-        <TextField fx:id="usernameField" HBox.hgrow="ALWAYS" promptText="Введите никнэйм" onAction="#login"/>
+        <TextField fx:id="usernameField" HBox.hgrow="ALWAYS" promptText="Введите никнэйм" />
+        <TextField fx:id="passwordField" HBox.hgrow="ALWAYS" promptText="Введите пароль" />
+
         <Button text="Войти" onAction="#login"/>
     </HBox>
     <HBox>

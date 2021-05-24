@@ -20,7 +20,7 @@ public class Server {
             try {
                 System.out.println("Сервер запущен на порту " + port + "...");
 
-                while(true) {
+                while (true) {
                     System.out.println("Ждём нового клиента...");
                     Socket socket = serverSocket.accept();
                     System.out.println("Клиент подключился");
@@ -63,8 +63,8 @@ public class Server {
     public void broadcastMessage(String message) {
         Iterator var2 = this.clients.iterator();
 
-        while(var2.hasNext()) {
-            ClientHandler clientHandler = (ClientHandler)var2.next();
+        while (var2.hasNext()) {
+            ClientHandler clientHandler = (ClientHandler) var2.next();
             clientHandler.sendMessage(message);
         }
 
@@ -80,8 +80,8 @@ public class Server {
                 return;
             }
 
-            client = (ClientHandler)var4.next();
-        } while(!client.getUsername().equals(receiverUsername));
+            client = (ClientHandler) var4.next();
+        } while (!client.getUsername().equals(receiverUsername));
 
         client.sendMessage("От: " + sender.getUsername() + " Сообщение: " + message);
         sender.sendMessage("Пользователю: " + receiverUsername + " Сообщение: " + message);
@@ -96,8 +96,8 @@ public class Server {
                 return false;
             }
 
-            clientHandler = (ClientHandler)var2.next();
-        } while(!clientHandler.getUsername().equals(nickname));
+            clientHandler = (ClientHandler) var2.next();
+        } while (!clientHandler.getUsername().equals(nickname));
 
         return true;
     }
@@ -106,8 +106,8 @@ public class Server {
         StringBuilder stringBuilder = new StringBuilder("/clients_list ");
         Iterator var2 = this.clients.iterator();
 
-        while(var2.hasNext()) {
-            ClientHandler client = (ClientHandler)var2.next();
+        while (var2.hasNext()) {
+            ClientHandler client = (ClientHandler) var2.next();
             stringBuilder.append(client.getUsername()).append(" ");
         }
 
@@ -115,8 +115,8 @@ public class Server {
         String clientsList = stringBuilder.toString();
         Iterator var6 = this.clients.iterator();
 
-        while(var6.hasNext()) {
-            ClientHandler clientHandler = (ClientHandler)var6.next();
+        while (var6.hasNext()) {
+            ClientHandler clientHandler = (ClientHandler) var6.next();
             clientHandler.sendMessage(clientsList);
         }
 
