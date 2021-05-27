@@ -61,11 +61,13 @@ public class Server {
     }
 
     public void broadcastMessage(String message) {
+
         Iterator var2 = this.clients.iterator();
 
         while (var2.hasNext()) {
             ClientHandler clientHandler = (ClientHandler) var2.next();
             clientHandler.sendMessage(message);
+
         }
 
     }

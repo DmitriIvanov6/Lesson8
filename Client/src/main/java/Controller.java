@@ -10,6 +10,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class Controller {
@@ -33,19 +34,23 @@ public class Controller {
     private String username;
 
     public void sendMsg(ActionEvent actionEvent) {
-        String msg = msgField.getText() + '\n';
-        try {
-            out.writeUTF(msg);
-            msgField.clear();
-        } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Невозможно отправить сообщение", ButtonType.OK);
-            alert.showAndWait();
+        if (!msgField.getText().isEmpty()){
+            String msg = msgField.getText() + '\n';
+            try {
+                out.writeUTF(msg);
+                msgField.clear();
+            } catch (IOException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Невозможно отправить сообщение", ButtonType.OK);
+                alert.showAndWait();
+            }
         }
+
     }
 
     public void login(ActionEvent actionEvent) {
         if (socket == null || socket.isClosed()) {
             connect();
+            ClientHistory.loggingStart(usernameField.getText());
         }
 
         if (usernameField.getText().isEmpty()) {
@@ -115,6 +120,7 @@ public class Controller {
                             continue;
                         }
                         msgArea.appendText(msg);
+                        ClientHistory.logHistory(msg);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -129,6 +135,7 @@ public class Controller {
         }
     }
 
+
     private void executeCommand(String cmd) {
         if (cmd.startsWith("/clients_list ")) {
             String[] tokens = cmd.split("\\s");
@@ -140,13 +147,19 @@ public class Controller {
                 }
             });
         }
+        if (cmd.startsWith(("/log "))){
+            msgArea.appendText(ClientHistory.chatLog(cmd));
+
+        }
     }
 
     public void disconnect() {
+        ClientHistory.loggingStop();
         setUsername(null);
         if (socket != null) {
             try {
                 socket.close();
+                msgArea.clear();
             } catch (IOException e) {
                 e.printStackTrace();
             }
